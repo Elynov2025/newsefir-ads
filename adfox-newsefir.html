@@ -20,7 +20,7 @@
     }
   </style>
 
-  <!-- Код загрузчика -->
+  <!-- код загрузки, как дали в инструкции -->
   <script async src="https://yandex.ru/ads/system/header-bidding.js"></script>
   <script src="https://new.adprofit.world/files/newsefir.net/newsefir.net.js"></script>
   <script>
@@ -35,21 +35,26 @@
 
   <script>
     window.yaContextCb.push(function () {
-      Ya.adfoxCode.create({
-        ownerId: 1451303,
-        containerId: 'adfox_176276769716794052',
-        params: {
-          p1: 'cxbbb',
-          p2: 'iazub',
-          pfc: 'hopqi',
-          pfb: 'bhwgbb'
-        },
-        // ВАЖНО: подставь сюда именно тот домен,
-        // который указан как площадка в AdFox/AdProfit.
-        // Если у тебя там newsefir.net — оставь так.
-        // Если newsefr.net — измени строку.
-        customDomain: 'newsefir.net'
-      });
+      try {
+        Ya.adfoxCode.create({
+          ownerId: 1451303,
+          containerId: 'adfox_176276769716794052',
+          params: {
+            p1: 'cxbbb',
+            p2: 'iazub',
+            pfc: 'hopqi',
+            pfb: 'bhwgbb'
+          },
+          // КЛЮЧЕВОЕ МЕСТО:
+          // здесь должен быть домен, на который заведена площадка в AdFox/AdProfit.
+          // Если код выдавали под newsefir.net — оставь так.
+          // Если под newsefr.net — поставь именно его.
+          customDomain: 'newsefir.net'
+        });
+      } catch (e) {
+        // Если что-то сломалось на уровне JS, покажем ошибку для отладки
+        document.body.innerHTML = '<pre style="font-size:12px;padding:4px;">Ad error: ' + e + '</pre>';
+      }
     });
   </script>
 </body>
