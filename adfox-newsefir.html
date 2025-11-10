@@ -18,9 +18,14 @@
       width: 100%;
       height: 100%;
     }
+    #debug {
+      font: 11px/1.4 monospace;
+      padding: 4px;
+      color: #555;
+    }
   </style>
 
-  <!-- код загрузки, как дали в инструкции -->
+  <!-- Код загрузчика (как в инструкции) -->
   <script async src="https://yandex.ru/ads/system/header-bidding.js"></script>
   <script src="https://new.adprofit.world/files/newsefir.net/newsefir.net.js"></script>
   <script>
@@ -32,10 +37,19 @@
 </head>
 <body>
   <div id="adfox_176276769716794052"></div>
+  <div id="debug"></div>
 
   <script>
+    // Стартовая отметка — чтобы понять, что файл вообще загрузился
+    document.getElementById('debug').textContent = 'init ok';
+
     window.yaContextCb.push(function () {
       try {
+        if (typeof Ya === 'undefined' || !Ya.adfoxCode || !Ya.adfoxCode.create) {
+          document.getElementById('debug').textContent = 'Ya.adfoxCode недоступен';
+          return;
+        }
+
         Ya.adfoxCode.create({
           ownerId: 1451303,
           containerId: 'adfox_176276769716794052',
@@ -45,15 +59,25 @@
             pfc: 'hopqi',
             pfb: 'bhwgbb'
           },
-          // КЛЮЧЕВОЕ МЕСТО:
-          // здесь должен быть домен, на который заведена площадка в AdFox/AdProfit.
-          // Если код выдавали под newsefir.net — оставь так.
-          // Если под newsefr.net — поставь именно его.
+          // ВАЖНО: домен должен быть тот, под который выдан код.
+          // Если код выдавали под newsefir.net — оставляем так.
+          // Если под newsefr.net — меняем строку ниже на 'newsefr.net'.
           customDomain: 'newsefir.net'
         });
+
+        // Через 3 секунды проверяем, отдали ли что-то
+        setTimeout(function () {
+          var c = document.getElementById('adfox_176276769716794052');
+          if (!c || c.innerHTML.replace(/\s+/g,'') === '') {
+            document.getElementById('debug').textContent =
+              'нет креатива: это или таргетинг (только мобайл/гео/лимиты), или домен не принят в AdFox/AdProfit';
+          } else {
+            document.getElementById('debug').textContent = '';
+          }
+        }, 3000);
+
       } catch (e) {
-        // Если что-то сломалось на уровне JS, покажем ошибку для отладки
-        document.body.innerHTML = '<pre style="font-size:12px;padding:4px;">Ad error: ' + e + '</pre>';
+        document.getElementById('debug').textContent = 'JS error: ' + (e && e.message ? e.message : e);
       }
     });
   </script>
