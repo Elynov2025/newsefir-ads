@@ -2,84 +2,88 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Newsefir Mobile Banner</title>
+  <title>Newsefir Banner Test</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: transparent;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f4f4f4;
+    }
+    #status {
+      padding: 8px;
+      font-size: 12px;
+      background: #222;
+      color: #fff;
+      word-break: break-word;
+    }
+    #wrap {
+      padding: 8px;
     }
     #adfox_176276769716794052 {
-      width: 100%;
-      height: 100%;
-    }
-    #debug {
-      font: 11px/1.4 monospace;
-      padding: 4px;
-      color: #555;
+      min-height: 90px;
+      background: #ffffff;
     }
   </style>
 
-  <!-- Код загрузчика (как в инструкции) -->
+  <!-- Оригинальные скрипты из инструкции -->
   <script async src="https://yandex.ru/ads/system/header-bidding.js"></script>
   <script src="https://new.adprofit.world/files/newsefir.net/newsefir.net.js"></script>
-  <script>
-    window.yaContextCb = window.yaContextCb || [];
-  </script>
+  <script>window.yaContextCb = window.yaContextCb || [];</script>
   <script async src="https://yandex.ru/ads/system/context.js"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7793819246037294"
           crossorigin="anonymous"></script>
 </head>
 <body>
+<div id="status">Страница загрузилась, ждём скрипты...</div>
+<div id="wrap">
   <div id="adfox_176276769716794052"></div>
-  <div id="debug"></div>
+</div>
 
-  <script>
-    // Стартовая отметка — чтобы понять, что файл вообще загрузился
-    document.getElementById('debug').textContent = 'init ok';
+<script>
+  window.yaContextCb.push(function () {
+    var st = document.getElementById('status');
 
-    window.yaContextCb.push(function () {
-      try {
-        if (typeof Ya === 'undefined' || !Ya.adfoxCode || !Ya.adfoxCode.create) {
-          document.getElementById('debug').textContent = 'Ya.adfoxCode недоступен';
-          return;
-        }
-
-        Ya.adfoxCode.create({
-          ownerId: 1451303,
-          containerId: 'adfox_176276769716794052',
-          params: {
-            p1: 'cxbbb',
-            p2: 'iazub',
-            pfc: 'hopqi',
-            pfb: 'bhwgbb'
-          },
-          // ВАЖНО: домен должен быть тот, под который выдан код.
-          // Если код выдавали под newsefir.net — оставляем так.
-          // Если под newsefr.net — меняем строку ниже на 'newsefr.net'.
-          customDomain: 'newsefir.net'
-        });
-
-        // Через 3 секунды проверяем, отдали ли что-то
-        setTimeout(function () {
-          var c = document.getElementById('adfox_176276769716794052');
-          if (!c || c.innerHTML.replace(/\s+/g,'') === '') {
-            document.getElementById('debug').textContent =
-              'нет креатива: это или таргетинг (только мобайл/гео/лимиты), или домен не принят в AdFox/AdProfit';
-          } else {
-            document.getElementById('debug').textContent = '';
-          }
-        }, 3000);
-
-      } catch (e) {
-        document.getElementById('debug').textContent = 'JS error: ' + (e && e.message ? e.message : e);
+    try {
+      if (!window.Ya || !Ya.adfoxCode || !Ya.adfoxCode.create) {
+        st.textContent = 'Ошибка: Ya.adfoxCode не инициализирован (context.js не загрузился или заблокирован).';
+        return;
       }
-    });
-  </script>
+
+      st.textContent = 'Ya.adfoxCode есть, запрашиваем баннер...';
+
+      Ya.adfoxCode.create({
+        ownerId: 1451303,
+        containerId: 'adfox_176276769716794052',
+        params: {
+          p1: 'cxbbb',
+          p2: 'iazub',
+          pfc: 'hopqi',
+          pfb: 'bhwgbb'
+        },
+        // СЮДА ВАЖНО: домен, ПОД КОТОРЫЙ ВЫДАН КОД В ADFOX/ADPROFIT.
+        // Если площадка оформлена на newsefir.net — оставь newsefir.net
+        // Если на newsefr.net — поставь 'newsefr.net'
+        customDomain: 'newsefir.net'
+      });
+
+      setTimeout(function () {
+        var c = document.getElementById('adfox_176276769716794052');
+        if (!c || c.innerHTML.replace(/\s+/g, '') === '') {
+          st.textContent =
+            'Код отработал, но баннер не пришёл. Это почти всегда настройки ADFOX/AdProfit: ' +
+            'домен площадки, таргетинг или статус кампании.';
+        } else {
+          st.textContent = 'Баннер загружен.';
+        }
+      }, 3000);
+
+    } catch (e) {
+      st.textContent = 'JS ошибка: ' + (e && e.message ? e.message : e);
+    }
+  });
+</script>
 </body>
 </html>
