@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Newsefir Adfox Banner</title>
+  <title>Newsefir Mobile Banner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -12,6 +12,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      background: transparent;
     }
     #adfox_176276769716794052 {
       width: 100%;
@@ -19,7 +20,7 @@
     }
   </style>
 
-  <!-- Код из инструкции (head) -->
+  <!-- Код загрузчика -->
   <script async src="https://yandex.ru/ads/system/header-bidding.js"></script>
   <script src="https://new.adprofit.world/files/newsefir.net/newsefir.net.js"></script>
   <script>
@@ -30,10 +31,8 @@
           crossorigin="anonymous"></script>
 </head>
 <body>
-  <!-- Место под баннер -->
   <div id="adfox_176276769716794052"></div>
 
-  <!-- Код из инструкции (тело) -->
   <script>
     window.yaContextCb.push(function () {
       Ya.adfoxCode.create({
@@ -44,7 +43,12 @@
           p2: 'iazub',
           pfc: 'hopqi',
           pfb: 'bhwgbb'
-        }
+        },
+        // ВАЖНО: подставь сюда именно тот домен,
+        // который указан как площадка в AdFox/AdProfit.
+        // Если у тебя там newsefir.net — оставь так.
+        // Если newsefr.net — измени строку.
+        customDomain: 'newsefir.net'
       });
     });
   </script>
