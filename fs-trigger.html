@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FS trigger</title>
+  <style>
+    html,body{margin:0;padding:0;height:100%;background:transparent}
+    .tap{
+      position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+      font:14px/1.3 system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#111;
+      background:rgba(255,255,255,.001); /* почти прозрачная "зона тапа" */
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <div class="tap" id="tap"></div>
+
+  <script>
+    (function(){
+      const MSG = { type: "YA_FULLSCREEN_TOUCH", v: 1 };
+
+      function ping(reason){
+        try {
+          parent.postMessage({ ...MSG, reason }, "*");
+        } catch(e){}
+      }
+
+      // Попытка “сама”
+      setTimeout(() => ping("auto_1s"), 1000);
+
+      // Самое надёжное — пользовательский тап
+      const el = document.getElementById("tap");
+      el.addEventListener("touchstart", () => ping("touch"), { passive:true });
+      el.addEventListener("click", () => ping("click"));
+    })();
+  </script>
+</body>
+</html>
