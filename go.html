@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Show fullscreen</title>
+
+  <script>window.yaContextCb = window.yaContextCb || [];</script>
+  <script src="https://yandex.ru/ads/system/context.js"></script>
+
+  <style>
+    body{font-family:Arial, sans-serif; padding:24px;}
+    button{padding:10px 14px; border:1px solid #333; border-radius:10px; background:#fff; cursor:pointer;}
+    .box{padding:12px 14px; border:1px solid #ddd; border-radius:10px; margin:12px 0;}
+  </style>
+</head>
+<body>
+  <h1>Вторая страница</h1>
+  <div class="box" id="status">Жду загрузку Яндекса...</div>
+
+  <button id="btn">Показать fullscreen</button>
+
+  <script>
+    function renderAd() {
+      try {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-14383531-9",
+          type: "fullscreen",
+          platform: "desktop"
+        });
+        document.getElementById('status').textContent = 'Команда render отправлена';
+      } catch (e) {
+        document.getElementById('status').textContent = 'Ошибка render (смотрите Console)';
+        console.error(e);
+      }
+    }
+
+    document.getElementById('btn').addEventListener('click', renderAd);
+
+    setTimeout(function () {
+      var ok = (typeof Ya !== 'undefined') && Ya.Context && Ya.Context.AdvManager;
+      document.getElementById('status').textContent = ok
+        ? 'OK: Яндекс загрузился. Нажмите кнопку "Показать fullscreen".'
+        : 'НЕ ОК: Яндекс не загрузился (часто AdBlock).';
+    }, 2000);
+  </script>
+</body>
+</html>
