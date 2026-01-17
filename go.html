@@ -1,39 +1,79 @@
-<script>
-  function setStatus(text) {
-    document.getElementById('status').textContent = text;
-    console.log(text);
-  }
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Show fullscreen</title>
 
-  function renderAd() {
-    try {
-      Ya.Context.AdvManager.render({
-        blockId: "R-A-14383531-9",
-        type: "fullscreen",
-        platform: "desktop",
+  <script>window.yaContextCb = window.yaContextCb || [];</script>
+  <script src="https://yandex.ru/ads/system/context.js"></script>
 
-        onRender: function (data) {
-          // data.product: direct или rtb
-          setStatus("OK: реклама отрисована (" + (data && data.product ? data.product : "unknown") + ")");
-        },
+  <style>
+    body{font-family:Arial, sans-serif; padding:24px;}
+    button{padding:10px 14px; border:1px solid #333; border-radius:10px; background:#fff; cursor:pointer;}
+    .box{padding:12px 14px; border:1px solid #ddd; border-radius:10px; margin:12px 0;}
+  </style>
+</head>
+<body>
+  <h1>Вторая страница</h1>
+  <div class="box" id="status">Жду загрузку Яндекса...</div>
 
-        onError: function (data) {
-          // data.type: error/warning, data.code, data.text
-          setStatus(
-            "ОШИБКА: " +
-            (data && data.type ? data.type : "") + " " +
-            (data && data.code ? data.code : "") + " " +
-            (data && data.text ? data.text : "")
-          );
-          console.log("Yandex onError data:", data);
-        }
-      });
+  <button id="btn">Показать fullscreen</button>
 
-      setStatus("Команда render отправлена (жду ответ)...");
-    } catch (e) {
-      setStatus("ИСКЛЮЧЕНИЕ: " + e.message);
-      console.error(e);
+  <script>
+    function setStatus(text) {
+      document.getElementById('status').textContent = text;
+      console.log(text);
     }
-  }
 
-  document.getElementById('btn').addEventListener('click', renderAd);
-</script>
+    function renderAd() {
+      try {
+        Ya.Context.AdvManager.render({
+          blockId: "R-A-14383531-9",
+          type: "fullscreen",
+          platform: "desktop",
+
+          onRender: function (data) {
+            setStatus("OK: реклама отрисована (" + (data && data.product ? data.product : "unknown") + ")");
+          },
+
+          onError: function (data) {
+            setStatus(
+              "ОШИБКА: " +
+              (data && data.type ? data.type : "") + " " +
+              (data && data.code ? data.code : "") + " " +
+              (data && data.text ? data.text : "")
+            );
+            console.log("Yandex onError data:", data);
+          }
+        });
+
+        setStatus("Команда render отправлена (жду ответ)...");
+      } catch (e) {
+        setStatus("ИСКЛЮЧЕНИЕ: " + e.message);
+        console.error(e);
+      }
+    }
+
+    // Вариант 1: привязка кнопки после полной загрузки страницы
+    window.addEventListener('load', function () {
+      var btn = document.getElementById('btn');
+      if (!btn) {
+        setStatus("ОШИБКА: кнопка не найдена (id=btn)");
+        return;
+      }
+      btn.addEventListener('click', renderAd);
+    });
+
+    // Дополнительная проверка: загрузился ли Яндекс
+    setTimeout(function () {
+      var ok = (typeof Ya !== 'undefined') && Ya.Context && Ya.Context.AdvManager;
+      if (ok) {
+        setStatus('OK: Яндекс загрузился. Нажмите кнопку "Показать fullscreen".');
+      } else {
+        setStatus('НЕ ОК: Яндекс не загрузился (часто AdBlock блокирует context.js).');
+      }
+    }, 2000);
+  </script>
+</body>
+</html>
