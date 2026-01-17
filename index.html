@@ -3,20 +3,32 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ad</title>
+  <title>Newsefir Ads Test</title>
 
   <script>window.yaContextCb = window.yaContextCb || [];</script>
   <script src="https://yandex.ru/ads/system/context.js"></script>
+
+  <style>
+    body{font-family:Arial, sans-serif; padding:24px;}
+    .box{padding:12px 14px; border:1px solid #ddd; border-radius:10px; margin:12px 0;}
+    a{display:inline-block; padding:10px 14px; border:1px solid #333; border-radius:10px; text-decoration:none; color:#111;}
+  </style>
 </head>
 <body>
+  <h1>Тест Яндекс рекламы</h1>
+
+  <div class="box" id="status">Проверяю загрузку...</div>
+
+  <a href="./go.html">Перейти на вторую страницу (там вызывается fullscreen)</a>
+
   <script>
-    window.yaContextCb.push(() => {
-      Ya.Context.AdvManager.render({
-        blockId: "R-A-14383531-9",
-        type: "fullscreen",
-        platform: "desktop"
-      });
-    });
+    setTimeout(function () {
+      var ok = (typeof Ya !== 'undefined') && Ya.Context && Ya.Context.AdvManager;
+      document.getElementById('status').textContent = ok
+        ? 'OK: Ya.Context.AdvManager загрузился'
+        : 'НЕ ОК: Ya.Context.AdvManager не появился (часто виноват AdBlock)';
+      console.log('Ya:', typeof Ya, Ya);
+    }, 2000);
   </script>
 </body>
 </html>
